@@ -1,15 +1,22 @@
 import React from 'react';
+import FormColumn from './column';
 
 
-const FourColumnRow = (props: { points: Array<number> }) => {
+const FourColumnRow = (props: { points: Array<number>, updatePoint: any, rowIndex: number }) => {
 
-  const { points } = props
+  const { points, updatePoint } = props
 
-  console.log(points)
+  const updateRow = (colIndex: number, colValue: number) => {
+
+    console.log("updateRow", colIndex, colValue)
+
+    points[colIndex] = colValue
+    updatePoint(points)
+  }
 
   return (
     <tr>
-      {points.map(p => (<td>{p}</td>))}
+      {points.map((p, idx) => (<td><FormColumn colIndex={idx} point={p} updateRow={updateRow} /></td>))}
     </tr>
   );
 };

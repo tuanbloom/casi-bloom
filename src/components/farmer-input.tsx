@@ -1,8 +1,6 @@
 const FarmerInput = (props: { title: string, updateName: any, shouldShow: boolean, farmerIndex: number }) => {
   const { title, updateName, shouldShow, farmerIndex } = props
 
-  console.log(shouldShow)
-
   if (!shouldShow) {
     return null
   }
