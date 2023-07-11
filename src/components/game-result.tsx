@@ -1,6 +1,10 @@
 import { Player } from "../model/player";
 
-const GameResult = ({ game }: any) => {
+const GameResult = ({ game, shouldShow }: any) => {
+
+  if (!shouldShow) {
+    return null
+  }
 
   const ranks = game.players.map((player: Player) => {
 

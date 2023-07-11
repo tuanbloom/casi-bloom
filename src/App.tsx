@@ -9,6 +9,7 @@ import GameContext from './context/game';
 import { Game } from './model/game';
 import { Player } from './model/player';
 import GameResult from './components/game-result';
+import GameHistory from './components/game-history';
 
 const LOCAL_KEY = {
   ACTIVE_GAME: "ACTIVE_GAME",
@@ -23,6 +24,7 @@ function App() {
   const [game, setGame] = useState(newGame)
   let [showGame, setShowGame] = useState(false)
   let [showStartButton, setShowStartButton] = useState(true)
+  let [histories, setHistories] = useState([])
 
   const getGameFromLocal = () => {
     const storedActiveGame = localStorage.getItem(LOCAL_KEY.ACTIVE_GAME);
@@ -110,6 +112,15 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+
+    const storedHistories = localStorage.getItem(LOCAL_KEY.HISTORY_GAME)
+
+    if (storedHistories) {
+      setHistories(JSON.parse(storedHistories))
+    }
+  }, []);
+
   return (
     <GameContext.Provider value={{ game, setGame: updateGame }}>
       <div className="App">
@@ -130,11 +141,18 @@ function App() {
           </div>
 
           <div className='row'>
-            <div className='col-12'>Ranking</div>
+            <div className='col-12 text-primary'>Ranking</div>
           </div>
           <div className='row'>
-            <GameResult game={game} />
+            <GameResult game={game} shouldShow={true} />
           </div>
+        </div>
+
+        <div className='row'>
+          <div className='col-12 text-primary'>History</div>
+        </div>
+        <div className='row'>
+          <GameHistory histories={histories} />
         </div>
       </div>
     </GameContext.Provider >

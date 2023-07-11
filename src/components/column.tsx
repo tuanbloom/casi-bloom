@@ -23,6 +23,7 @@ const FormColumn = ({ result, round, updateRoundResult }: any) => {
 
     context.setGame({ ...context.game })
     setShowModal(false)
+    updateRoundResult(result.playerId, 0)
   }
 
   return (
