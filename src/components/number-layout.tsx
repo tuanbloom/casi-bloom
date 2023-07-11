@@ -6,9 +6,6 @@ const NumberLayout = ({ pos, active, handler }: any) => {
 
   useEffect(() => {
 
-    console.log(Math.floor(active / 10))
-    console.log(active % 10)
-
     if (pos === 0) {
       setPosActive(Math.floor(active / 10))
     }

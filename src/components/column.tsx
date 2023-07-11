@@ -28,7 +28,7 @@ const FormColumn = ({ result, round, updateRoundResult }: any) => {
   return (
     <div className="col-3 mb-2">
       <Button
-        variant={"secondary " + (result.playerId === round.winnerId ? "btn-danger" : "")}
+        variant={"secondary " + (result.playerId === round.winnerId ? "btn-danger" : (result.point > 0 ? "btn-warning" : ""))}
         onClick={() => { setShowModal(true) }}>{result.point}</Button>
       <PointInput
         showInput={showModal}

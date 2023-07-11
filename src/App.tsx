@@ -8,6 +8,7 @@ import StartButton from './components/start-button';
 import GameContext from './context/game';
 import { Game } from './model/game';
 import { Player } from './model/player';
+import GameResult from './components/game-result';
 
 const LOCAL_KEY = {
   ACTIVE_GAME: "ACTIVE_GAME",
@@ -128,6 +129,12 @@ function App() {
             </div>
           </div>
 
+          <div className='row'>
+            <div className='col-12'>Ranking</div>
+          </div>
+          <div className='row'>
+            <GameResult game={game} />
+          </div>
         </div>
       </div>
     </GameContext.Provider >

@@ -15,7 +15,7 @@ const FourColumnRow = ({ round }: any) => {
     if (currentRound) {
 
       currentRound.results.forEach((_result: RoundResult) => {
-        if (_result.playerId === playerId) {
+        if (_result.playerId === playerId && _result.playerId !== round.winnerId) {
           _result.point = Number(colValue)
         }
       });
@@ -27,11 +27,6 @@ const FourColumnRow = ({ round }: any) => {
             .reduce((t: number, r: RoundResult) => Number(t) + Number(r.point), 0) * -1
         }
       });
-
-      const playerInRound = currentRound.results.find((r: RoundResult) => r.playerId === playerId)
-      if (playerInRound && playerInRound !== round.winnerId) {
-        playerInRound.point = Number(colValue)
-      }
 
       context.setGame({ ...newGame })
     }
