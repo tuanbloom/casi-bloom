@@ -8,27 +8,44 @@ const FourColumnRow = ({ round }: any) => {
 
   const context = useContext(gameContext)
 
-  console.log(round)
-
   const updateRoundResult = (playerId: string, colValue: number) => {
+
     const newGame = { ...context.game }
     const currentRound = newGame.rounds.find(r => r.id === round.id)
     if (currentRound) {
-      const playerInRound = currentRound?.results.find(r => r.playerId === playerId)
-      if (playerInRound) {
-        playerInRound.point = colValue
 
-        context.setGame(newGame)
+      currentRound.results.forEach((_result: RoundResult) => {
+        if (_result.playerId === playerId) {
+          _result.point = Number(colValue)
+        }
+      });
+
+      currentRound.results.forEach((_result: RoundResult) => {
+
+        if (_result.playerId === currentRound.winnerId) {
+          _result.point = round.results.filter((r: RoundResult) => r.playerId !== round.winnerId && r.point < 0)
+            .reduce((t: number, r: RoundResult) => Number(t) + Number(r.point), 0) * -1
+        }
+      });
+
+      const playerInRound = currentRound.results.find((r: RoundResult) => r.playerId === playerId)
+      if (playerInRound && playerInRound !== round.winnerId) {
+        playerInRound.point = Number(colValue)
       }
-    }
 
+      context.setGame({ ...newGame })
+    }
 
   }
 
   return (
-    <tr>
-      {round.results.map((result: RoundResult) => (<td><FormColumn key={result.playerId} result={result} updateRoundResult={updateRoundResult} /></td>))}
-    </tr>
+    <>
+      {round.results.map((result: RoundResult) => (<FormColumn
+        key={result.playerId}
+        result={result}
+        round={round}
+        updateRoundResult={updateRoundResult} />))}
+    </>
   );
 };
 

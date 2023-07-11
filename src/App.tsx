@@ -9,6 +9,11 @@ import GameContext from './context/game';
 import { Game } from './model/game';
 import { Player } from './model/player';
 
+const LOCAL_KEY = {
+  ACTIVE_GAME: "ACTIVE_GAME",
+  HISTORY_GAME: "HISTORY_GAME",
+}
+
 function App() {
 
   const players = [1, 2, 3, 4].map(() => ({ id: v4(), name: '' } as Player))
@@ -18,19 +23,19 @@ function App() {
   let [showGame, setShowGame] = useState(false)
   let [showStartButton, setShowStartButton] = useState(true)
 
-
-  useEffect(() => {
-    const storedGames = localStorage.getItem('games');
-    if (storedGames) {
-      const games: Game[] = JSON.parse(storedGames);
-
-      const activeGame = games.find(g => g.active);
-      if (activeGame) {
-        setGame(activeGame)
-        startFarming()
-      } 
+  const getGameFromLocal = () => {
+    const storedActiveGame = localStorage.getItem(LOCAL_KEY.ACTIVE_GAME);
+    if (storedActiveGame) {
+      const game: Game = JSON.parse(storedActiveGame);
+      return game
     }
-  }, [setGame, game]);
+
+    return null
+  }
+
+  const updateGameToLocal = () => {
+    localStorage.setItem(LOCAL_KEY.ACTIVE_GAME, JSON.stringify(game))
+  }
 
 
   const updatePlayerName = (pId: string, name: string) => {
@@ -46,25 +51,63 @@ function App() {
     })
   }
 
-  const updateGame = (g: Game) => {
-    console.log(g)
-    setGame({ ...g })
-    return { ...g }
+  const updateGame = (updatedGame: Game) => {
+    console.log("updateGame", updatedGame)
+    setGame(updatedGame)
+    updateGameToLocal()
+    return updatedGame  
 
   }
 
   const startFarming = () => {
+    if (game.players.some(p => p.name === "")) {
+      return
+    }
 
     setGame((g) => {
-      const newGame = { ...g }
-      newGame.active = true
-
-      return newGame
+      const newG = { ...g }
+      newG.active = true
+      updateGameToLocal()
+      setShowGame(true)
+      setShowStartButton(false)
+      return newG
     })
+
+  }
+
+  const resumeFarming = () => {
 
     setShowGame(true)
     setShowStartButton(false)
   }
+
+  const finishFarming = () => {
+    const histories = localStorage.getItem(LOCAL_KEY.HISTORY_GAME) || JSON.stringify([])
+    localStorage.setItem(LOCAL_KEY.HISTORY_GAME, JSON.stringify([...JSON.parse(histories), game]))
+    localStorage.removeItem(LOCAL_KEY.ACTIVE_GAME)
+
+
+    setShowGame(false)
+    setShowStartButton(true)
+
+    setGame(() => newGame)
+  }
+
+  useEffect(() => {
+    console.log("Effect game", game)
+    if (game.active) {
+      resumeFarming()
+    }
+
+  }, [game, setGame])
+
+  useEffect(() => {
+
+    const activeGame = getGameFromLocal()
+    if (activeGame) {
+      setGame(activeGame)
+    }
+  }, []);
 
   return (
     <GameContext.Provider value={{ game, setGame: updateGame }}>
@@ -81,7 +124,7 @@ function App() {
           <FarmerInput game={game} shouldShow={!game.active} updateName={updatePlayerName} />
           <div className='row'>
             <div className='col-md-12'>
-              <MainPage game={game} showGame={showGame} />
+              <MainPage finishFarming={finishFarming} game={game} showGame={showGame} />
             </div>
           </div>
 

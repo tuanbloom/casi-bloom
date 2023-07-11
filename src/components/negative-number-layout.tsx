@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react"
 
-const NumberLayout = ({ pos, active, handler }: any) => {
+const NegativeNumberLayout = ({ pos, active, handler }: any) => {
 
   const [posActive, setPosActive] = useState(0)
 
   useEffect(() => {
 
-    console.log(Math.floor(active / 10))
-    console.log(active % 10)
 
     if (pos === 0) {
-      setPosActive(Math.floor(active / 10))
+      setPosActive(Math.ceil(active / 10))
     }
 
     else if (pos === 1) {
       setPosActive(active % 10)
     }
+
   }, [active, pos])
 
   const updateSelection = (pos: number, num: number) => {
@@ -26,9 +25,10 @@ const NumberLayout = ({ pos, active, handler }: any) => {
 
   const nums = []
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i > -10; i--) {
     nums.push(i)
   }
+
   return (
     <>
 
@@ -43,4 +43,4 @@ const NumberLayout = ({ pos, active, handler }: any) => {
 
 }
 
-export default NumberLayout
+export default NegativeNumberLayout

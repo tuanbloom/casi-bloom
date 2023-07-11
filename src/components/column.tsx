@@ -1,8 +1,11 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import PointInput from "./point-input"
 import Button from 'react-bootstrap/Button'
+import gameContext from "../context/game"
 
-const FormColumn = ({ result, updateRoundResult }: any) => {
+const FormColumn = ({ result, round, updateRoundResult }: any) => {
+
+  const context = useContext(gameContext)
 
   const [showModal, setShowModal] = useState(false)
 
@@ -11,11 +14,28 @@ const FormColumn = ({ result, updateRoundResult }: any) => {
     updateRoundResult(result.playerId, value)
   }
 
+  const setPlayerAsWinner = () => {
+
+    const updatedRound = context.game.rounds.find(r => r.id === round.id)
+    if (updatedRound) {
+      updatedRound.winnerId = result.playerId
+    }
+
+    context.setGame({ ...context.game })
+    setShowModal(false)
+  }
+
   return (
-    <>
-      <Button variant="secondary" onClick={() => { setShowModal(true) }}>{result.point}</Button>
-      <PointInput showInput={showModal} point={result.point} handleModalPointSelect={handleModalPointSelect} />
-    </>
+    <div className="col-3 mb-2">
+      <Button
+        variant={"secondary " + (result.playerId === round.winnerId ? "btn-danger" : "")}
+        onClick={() => { setShowModal(true) }}>{result.point}</Button>
+      <PointInput
+        showInput={showModal}
+        point={result.point}
+        handleModalPointSelect={handleModalPointSelect}
+        setPlayerAsWinner={setPlayerAsWinner} />
+    </div>
   )
 }
 

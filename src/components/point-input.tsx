@@ -1,25 +1,30 @@
 import { useState } from "react";
-import NumberLayout from "./number-layout"
 import Modal from 'react-bootstrap/Modal';
+import NumberLayout from "./number-layout";
+import NegativeNumberLayout from "./negative-number-layout";
 
-const PointInput = ({ showInput, point, handleModalPointSelect }: any) => {
+const PointInput = ({ showInput, point, handleModalPointSelect, setPlayerAsWinner }: any) => {
 
   const [value, setValue] = useState([0, 0])
 
   const numberSelect = (pos: number, num: number) => {
     value[pos] = num
-    const result = value.join('')
+    const result = value[0] * 10 + value[1]
 
     setValue([...value])
     if (pos === 1) {
       handleModalPointSelect(result)
     }
-
   }
 
-  const setPlayerAsWinner = () => {
+  const negativeNumberSelect = (pos: number, num: number) => {
+    value[pos] = num
+    const result = value[0] * 10 + value[1]
 
-
+    setValue([...value])
+    if (pos === 1) {
+      handleModalPointSelect(result)
+    }
   }
 
   return (
@@ -40,7 +45,16 @@ const PointInput = ({ showInput, point, handleModalPointSelect }: any) => {
             </div>
             <div className="col-6">
               <NumberLayout pos={1} active={point} handler={numberSelect} />
+            </div>
+          </div>
 
+          <div className="row">
+            <div className="col-6">
+              <NegativeNumberLayout pos={0} active={point} handler={negativeNumberSelect} />
+
+            </div>
+            <div className="col-6">
+              <NegativeNumberLayout pos={1} active={point} handler={negativeNumberSelect} />
             </div>
           </div>
         </Modal.Body>
