@@ -1,5 +1,6 @@
-const FarmerInput = (props: { title: string, updateName: any, shouldShow: boolean, farmerIndex: number }) => {
-  const { title, updateName, shouldShow, farmerIndex } = props
+import { Player } from "../model/player"
+
+const FarmerInput = ({ game, shouldShow, updateName }: any) => {
 
   if (!shouldShow) {
     return null
@@ -8,11 +9,16 @@ const FarmerInput = (props: { title: string, updateName: any, shouldShow: boolea
 
   return (
     <>
-      <div className='col-md-6'>{title}</div>
-      <div className='col-md-6'>
-        <input type='text' onBlur={(event) => { updateName(event, farmerIndex) }} />
-      </div>
+      {
+        game.players.map((p: Player) => (<div className="row">
+          <div className='col-md-6'>Farmer {p.name}</div>
+          <div className='col-md-6'>
+            <input type='text' onBlur={(event) => { updateName(p.id, event.target.value) }} />
+          </div>
+        </div>))
+      }
     </>
+
   )
 }
 

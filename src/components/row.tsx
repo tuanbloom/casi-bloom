@@ -1,22 +1,33 @@
-import React from 'react';
+import { useContext } from 'react';
+import gameContext from '../context/game';
+import { RoundResult } from '../model/round-record';
 import FormColumn from './column';
 
 
-const FourColumnRow = (props: { points: Array<number>, updatePoint: any, rowIndex: number }) => {
+const FourColumnRow = ({ round }: any) => {
 
-  const { points, updatePoint } = props
+  const context = useContext(gameContext)
 
-  const updateRow = (colIndex: number, colValue: number) => {
+  console.log(round)
 
-    console.log("updateRow", colIndex, colValue)
+  const updateRoundResult = (playerId: string, colValue: number) => {
+    const newGame = { ...context.game }
+    const currentRound = newGame.rounds.find(r => r.id === round.id)
+    if (currentRound) {
+      const playerInRound = currentRound?.results.find(r => r.playerId === playerId)
+      if (playerInRound) {
+        playerInRound.point = colValue
 
-    points[colIndex] = colValue
-    updatePoint(points)
+        context.setGame(newGame)
+      }
+    }
+
+
   }
 
   return (
     <tr>
-      {points.map((p, idx) => (<td><FormColumn colIndex={idx} point={p} updateRow={updateRow} /></td>))}
+      {round.results.map((result: RoundResult) => (<td><FormColumn key={result.playerId} result={result} updateRoundResult={updateRoundResult} /></td>))}
     </tr>
   );
 };

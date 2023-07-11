@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import FourColumnRow from './row';
+import { useContext, useEffect, useState } from 'react';
 import DangerButton from './danger-button';
 import PrimaryButton from './primary-button';
-import UUID from 'uuid'
+import FourColumnRow from './row';
+import { Player } from '../model/player';
+import gameContext from '../context/game';
+import { RoundRecord, RoundResult } from '../model/round-record';
+import { v4 } from 'uuid';
 
-const FourColumnTable = ({ farmers }: { farmers: string[] }) => {
+const FourColumnTable = ({ farmers }: { farmers: Player[] }) => {
+  const context = useContext(gameContext)
 
   const [rowPoints, setRowPoints]: [Array<Array<number>>, any] = useState([[0, 0, 0, 0]])
 
@@ -17,9 +21,14 @@ const FourColumnTable = ({ farmers }: { farmers: string[] }) => {
   }, []);
 
   const addRecord = () => {
-    const newPoints = [...rowPoints, [0, 0, 0, 0]]
-    setRowPoints(newPoints)
-    localStorage.setItem('points', JSON.stringify(rowPoints))
+    const updatedGame = { ...context.game }
+    const newRoundResults = updatedGame.players.map(p => ({ playerId: p.id, point: 0 } as RoundResult))
+    const newRound = { id: v4(), results: newRoundResults, winnerId: '' } as RoundRecord
+    updatedGame.rounds.push(newRound)
+    context.setGame({ ...updatedGame })
+    // const newPoints = [...rowPoints, [0, 0, 0, 0]]
+    // setRowPoints(newPoints)
+    // localStorage.setItem('points', JSON.stringify(rowPoints))
   }
 
   const finishGame = () => {
@@ -29,7 +38,6 @@ const FourColumnTable = ({ farmers }: { farmers: string[] }) => {
   }
 
   const updatePoint = (index: number, value: any) => {
-    console.log("updatePoint", index, value)
     rowPoints[index] = value
     setRowPoints([...rowPoints])
     localStorage.setItem('points', JSON.stringify(rowPoints))
@@ -40,11 +48,14 @@ const FourColumnTable = ({ farmers }: { farmers: string[] }) => {
       <table className="table">
         <thead>
           <tr>
-            {farmers.map(name => (<th>{name}</th>))}
+            {farmers.map(p => (<th>{p.name}</th>))}
           </tr>
         </thead>
         <tbody>
-          {rowPoints.map((row, idx) => (<FourColumnRow rowIndex={idx} points={row} updatePoint={updatePoint} />))}
+          {context.game.rounds.map((round) => (<FourColumnRow
+            key={round.id}
+            round={round}
+            updatePoint={updatePoint} />))}
         </tbody>
       </table>
       <div className='row'>

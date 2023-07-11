@@ -17,13 +17,22 @@ const PointInput = ({ showInput, point, handleModalPointSelect }: any) => {
 
   }
 
+  const setPlayerAsWinner = () => {
+
+
+  }
+
   return (
     <>
       <Modal show={showInput} >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Select Point</Modal.Title>
+          <div className="row">
+            <div className="col"><button onClick={setPlayerAsWinner} className="btn btn-danger">Winner</button></div>
+          </div>
         </Modal.Header>
         <Modal.Body>
+
           <div className="row">
             <div className="col-6">
               <NumberLayout pos={0} active={point} handler={numberSelect} />

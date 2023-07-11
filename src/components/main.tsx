@@ -1,14 +1,13 @@
 import FourColumnTable from "./table"
 
-const MainPage = ({ showApp, farmers }: { showApp: boolean, farmers: string[] }) => {
-
-  if (!showApp) {
+const MainPage = ({ showGame, game }: any) => {
+  if (!showGame) {
     return null
   }
 
   return (
     <div className="App">
-      <FourColumnTable farmers={farmers} />
+      <FourColumnTable farmers={game.players} />
     </div>
   )
 }
